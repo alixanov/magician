@@ -32,6 +32,8 @@ const ContentContainer = styled(Box)(({ theme }) => ({
     marginRight: 0,
     paddingBottom: '80px',
     padding: '15px',
+    marginTop: '10px', // Add margin to account for fixed navbar
+
   },
 }));
 
