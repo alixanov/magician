@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap');
+
+/* Apply Cinzel globally */
+body {
+  font-family: 'Cinzel', serif;
+}
+
+/* For MUI components that use Typography */
+.MuiTypography-root {
+  font-family: 'Cinzel', serif !important;
+}
