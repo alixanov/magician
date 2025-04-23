@@ -1,21 +1,22 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Main, Layout, Map } from '../components';
+import { Main, Layout, Map, Getting ,Info} from '../components';
 import { ThemeProvider, createTheme, useMediaQuery } from '@mui/material';
 import Footer from '../components/footer/Footer';
 
-// Создаем тему с магическим шрифтом и цветами
+// Обновляем тему для насыщенного красно-белого фона
 const theme = createTheme({
   typography: {
     fontFamily: '"Cinzel", serif',
-    h1: { fontWeight: 700 },
-    h2: { fontWeight: 600 },
-    button: { fontFamily: '"Cinzel", serif', fontWeight: 500 },
+    h1: { fontWeight: 700, color: '#FFFFFF' }, // Белый для контраста
+    h2: { fontWeight: 600, color: '#FFFFFF' }, // Белый
+    button: { fontFamily: '"Cinzel", serif', fontWeight: 500, color: '#FFFFFF' },
   },
   palette: {
-    primary: { main: '#ffd700', contrastText: '#fff' },
-    secondary: { main: '#500080', contrastText: '#fff' },
-    background: { default: '#0a0032', paper: 'rgba(50, 0, 100, 0.2)' },
+    primary: { main: '#D00000', contrastText: '#FFFFFF' }, // Яркий красный
+    secondary: { main: '#A80000', contrastText: '#FFFFFF' }, // Тёмно-красный
+    background: { default: 'rgb(11, 0, 0)', paper: 'rgba(174, 0, 0, 0.9)' }, // Белый фон с лёгким красным
+    text: { primary: '#FFFFFF', secondary: '#E0E0E0' }, // Белый и светло-серый для текста
   },
   components: {
     MuiButton: {
@@ -24,9 +25,12 @@ const theme = createTheme({
           fontFamily: '"Cinzel", serif',
           borderRadius: '12px',
           transition: 'all 0.3s ease',
+          backgroundColor: '#D00000',
+          color: '#FFFFFF',
           '&:hover': {
-            boxShadow: '0 0 15px rgba(255, 223, 0, 0.5)',
-            transform: 'scale(1.05)',
+            boxShadow: '0 0 15px rgba(208, 0, 0, 0.8)',
+            transform: 'scale(1.08)',
+            backgroundColor: '#A80000',
           },
         },
       },
@@ -46,7 +50,8 @@ const AppRoutes = () => {
           <Route path="app/maps" element={<Map />} />
         </Route>
       </Routes>
-      {!isMobile && <Footer />} {/* Скрываем footer на мобильных устройствах */}
+      <Info />
+      <Getting/>
     </ThemeProvider>
   );
 };

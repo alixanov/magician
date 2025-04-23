@@ -1,357 +1,235 @@
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { styled } from '@mui/material/styles';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import Tilt from 'react-parallax-tilt';
 import { gsap } from 'gsap';
-import { charactersData } from '../data/AiData';
-import SwiperComponent from '../swiper/Swiper';
 
-// Styled Components
-const MainContainer = styled(Box)(({ theme }) => ({
+const BigContainer = styled(Box)(({ theme }) => ({
+width:"100%",
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  padding: 'clamp(20px, 5vw, 40px) clamp(10px, 2vw, 20px)',
-  minHeight: 'calc(100vh - 80px)',
+  justifyContent: 'center',
+
+}));
+// Styled Components
+const MainContainer = styled(Box)(({ theme }) => ({
   background: 'transparent',
+  minHeight: 'calc(100vh - 80px)',
+  padding: '80px 20px',
   color: '#fff',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
   position: 'relative',
-  zIndex: 10,
-  [theme.breakpoints.down('lg')]: {
-    padding: 'clamp(15px, 4vw, 30px) clamp(8px, 1.5vw, 15px)',
-  },
-  [theme.breakpoints.down('md')]: {
-    padding: 'clamp(12px, 3vw, 25px) clamp(6px, 1vw, 12px)',
-  },
+  overflow: 'hidden',
   [theme.breakpoints.down('sm')]: {
-    padding: 'clamp(10px, 2vw, 20px) clamp(5px, 1vw, 10px) clamp(10px, 2vw, 20px) clamp(5px, 1vw, 10px)',
-    minHeight: 'calc(100vh - 60px)',
-    paddingBottom: '60px', // Учёт мобильного футера
-  },
-  [theme.breakpoints.down('xs')]: {
-    padding: '10px 5px 60px 5px',
+    padding: '40px 15px',
   },
 }));
 
 const Title = styled(Typography)(({ theme }) => ({
   fontFamily: '"Cinzel", serif',
-  fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-  fontWeight: 700,
-  color: '#ffd700',
-  textShadow: '0 0 12px rgba(255, 223, 0, 0.6)',
-  marginBottom: 'clamp(15px, 3vw, 25px)',
-  animation: 'titlePulse 3s ease-in-out infinite',
-  letterSpacing: '0.05em',
-  '@keyframes titlePulse': {
-    '0%, 100%': { transform: 'scale(1)', textShadow: '0 0 12px rgba(255, 223, 0, 0.6)' },
-    '50%': { transform: 'scale(1.05)', textShadow: '0 0 20px rgba(255, 223, 0, 0.9)' },
-  },
-  [theme.breakpoints.down('md')]: {
-    fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-  },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
-    marginBottom: 'clamp(10px, 2vw, 15px)',
-  },
-}));
-
-const WelcomeSection = styled(Box)(({ theme }) => ({
-  maxWidth: 'clamp(600px, 90%, 1200px)',
-  textAlign: 'center',
-  marginBottom: 'clamp(30px, 5vw, 50px)',
-  padding: 'clamp(15px, 3vw, 25px)',
-  borderRadius: '12px',
-  background: 'transparent',
-  [theme.breakpoints.down('md')]: {
-    maxWidth: '95%',
-    marginBottom: 'clamp(20px, 4vw, 40px)',
-    padding: 'clamp(12px, 2vw, 20px)',
-  },
-  [theme.breakpoints.down('sm')]: {
-    maxWidth: '100%',
-    marginBottom: 'clamp(15px, 3vw, 30px)',
-    padding: 'clamp(10px, 1.5vw, 15px)',
-  },
-}));
-
-const WelcomeTitle = styled(Typography)(({ theme }) => ({
-  fontFamily: '"Cinzel", serif',
-  fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
-  fontWeight: 700,
-  color: '#ffd700',
-  marginBottom: 'clamp(10px, 2vw, 16px)',
-  textShadow: '0 0 10px rgba(255, 223, 0, 0.6)',
-  animation: 'titleGlow 2s ease-in-out infinite',
-  letterSpacing: '0.03em',
-  '@keyframes titleGlow': {
-    '0%, 100%': { textShadow: '0 0 10px rgba(255, 223, 0, 0.6)' },
-    '50%': { textShadow: '0 0 18px rgba(255, 223, 0, 0.9)' },
-  },
-  [theme.breakpoints.down('md')]: {
-    fontSize: 'clamp(1.2rem, 2.5vw, 1.8rem)',
-  },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: 'clamp(1rem, 2vw, 1.5rem)',
-    marginBottom: 'clamp(8px, 1.5vw, 12px)',
-  },
-}));
-
-const WelcomeText = styled(Typography)(({ theme }) => ({
-  fontFamily: '"Lora", serif',
-  fontSize: 'clamp(1rem, 1.8vw, 1.3rem)',
-  fontWeight: 400,
-  color: '#e0e0e0',
-  lineHeight: '1.8',
-  letterSpacing: '0.02em',
-  '& span': {
-    color: '#ffd700',
-    fontWeight: 600,
-  },
-  animation: 'textFlicker 4s ease-in-out infinite',
-  '@keyframes textFlicker': {
-    '0%, 100%': { opacity: 1 },
-    '50%': { opacity: 0.95 },
-  },
-  [theme.breakpoints.down('md')]: {
-    fontSize: 'clamp(0.9rem, 1.5vw, 1.1rem)',
-    lineHeight: '1.6',
-  },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: 'clamp(0.8rem, 1.2vw, 1rem)',
-    lineHeight: '1.5',
-  },
-}));
-
-const CharactersGrid = styled(Box)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(250px, 30vw, 300px), 1fr))',
-  gap: 'clamp(20px, 3vw, 30px)',
-  width: '100%',
-  maxWidth: 'clamp(800px, 90vw, 1600px)',
-  [theme.breakpoints.down('lg')]: {
-    gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(220px, 28vw, 280px), 1fr))',
-    maxWidth: 'clamp(700px, 95vw, 1400px)',
-  },
-  [theme.breakpoints.down('md')]: {
-    gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(200px, 45vw, 260px), 1fr))',
-    gap: 'clamp(15px, 2vw, 25px)',
-  },
-  [theme.breakpoints.down('sm')]: {
-    gridTemplateColumns: '1fr',
-    gap: 'clamp(10px, 1.5vw, 20px)',
-    maxWidth: '100%',
-  },
-}));
-
-const CharacterCard = styled(Box)(({ theme }) => ({
-  background: 'rgba(255, 255, 255, 0.05)',
-  backdropFilter: 'blur(10px)',
-  border: '1px solid rgba(255, 223, 0, 0.3)',
-  borderRadius: '16px',
-  overflow: 'hidden',
-  transition: 'all 0.3s ease',
-  boxShadow: '0 4px 15px rgba(255, 223, 0, 0.1)',
-  '&:hover': {
-    transform: 'translateY(-10px)',
-    boxShadow: '0 8px 25px rgba(255, 223, 0, 0.3)',
-    border: '1px solid rgba(255, 223, 0, 0.8)',
-  },
-  [theme.breakpoints.down('sm')]: {
-    maxWidth: '340px',
-  },
-}));
-
-const CharacterImage = styled('img')(({ theme }) => ({
-  width: '100%',
-  height: 'clamp(200px, 25vw, 300px)',
-  objectFit: 'cover',
-  display: 'block',
-  [theme.breakpoints.down('md')]: {
-    height: 'clamp(180px, 22vw, 260px)',
-  },
-  [theme.breakpoints.down('sm')]: {
-    height: 'clamp(360px, 20vw, 220px)',
-  },
-}));
-
-const CharacterInfo = styled(Box)(({ theme }) => ({
-  padding: 'clamp(15px, 2vw, 20px)',
+  fontSize: '6rem',
+  fontWeight: 900,
   color: '#fff',
-  textAlign: 'center',
+  textShadow: '0 0 25px rgba(255, 0, 0, 0.9), 0 0 40px rgba(139, 0, 0, 0.6)',
+  marginBottom: '40px',
+  animation: 'pulseGlow 1.8s ease-in-out infinite',
+  '@keyframes pulseGlow': {
+    '0%, 100%': { textShadow: '0 0 25px rgba(255, 0, 0, 0.9), 0 0 40px rgba(139, 0, 0, 0.6)' },
+    '50%': { textShadow: '0 0 40px rgba(255, 0, 0, 1), 0 0 60px rgba(139, 0, 0, 0.8)' },
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '3.5rem',
+  },
+}));
+
+const Description = styled(Typography)(({ theme }) => ({
+  fontFamily: '"Lora", "Cinzel", serif',
+  fontSize: '1.5rem',
+  color: '#fff',
+  maxWidth: '800px',
+  lineHeight: '1.9',
+  textShadow: '0 0 10px rgba(255, 0, 0, 0.5)',
+  marginBottom: '30px',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1.2rem',
+    maxWidth: '90%',
+  },
+}));
+
+const PlayButton = styled(Button)(({ theme }) => ({
   fontFamily: '"Cinzel", serif',
-  [theme.breakpoints.down('sm')]: {
-    padding: 'clamp(10px, 1.5vw, 15px)',
-  },
-}));
-
-const CharacterName = styled(Typography)(({ theme }) => ({
-  fontSize: 'clamp(1.4rem, 2vw, 1.8rem)',
+  fontSize: '1.2rem',
   fontWeight: 700,
-  marginBottom: 'clamp(6px, 1vw, 8px)',
+  color: '#fff',
+  background: 'linear-gradient(45deg, #ff0000, #8b0000)',
+  padding: '12px 30px',
+  borderRadius: '12px',
+  textTransform: 'uppercase',
+  boxShadow: '0 0 15px rgba(255, 0, 0, 0.7), 0 0 25px rgba(139, 0, 0, 0.5)',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    background: 'linear-gradient(45deg, #ff3333, #a10000)',
+    boxShadow: '0 0 25px rgba(255, 0, 0, 0.9), 0 0 35px rgba(139, 0, 0, 0.7)',
+    transform: 'scale(1.1)',
+  },
+  animation: 'pulseButton 2s ease-in-out infinite',
+  '@keyframes pulseButton': {
+    '0%, 100%': { boxShadow: '0 0 15px rgba(255, 0, 0, 0.7), 0 0 25px rgba(139, 0, 0, 0.5)' },
+    '50%': { boxShadow: '0 0 20px rgba(255, 0, 0, 0.9), 0 0 30px rgba(139, 0, 0, 0.7)' },
+  },
   [theme.breakpoints.down('sm')]: {
-    fontSize: 'clamp(1.2rem, 1.8vw, 1.5rem)',
+    fontSize: '1rem',
+    padding: '10px 20px',
   },
 }));
 
-const CharacterClass = styled(Typography)(({ theme }) => ({
-  fontSize: 'clamp(1rem, 1.5vw, 1.2rem)',
-  fontWeight: 500,
-  color: '#ffd700',
-  marginBottom: 'clamp(6px, 1vw, 8px)',
+const Particle = styled(Box)(({ theme, shape }) => ({
+  position: 'absolute',
+  width: shape === 'star' ? '12px' : '8px',
+  height: shape === 'star' ? '12px' : '8px',
+  background:
+    shape === 'star'
+      ? 'radial-gradient(circle, rgba(255, 0, 0, 0.9), rgba(255, 0, 0, 0))'
+      : 'radial-gradient(circle, rgba(255, 0, 0, 0.8), rgba(255, 0, 0, 0))',
+  borderRadius: shape === 'star' ? '0' : '50%',
+  clipPath:
+    shape === 'star'
+      ? 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)'
+      : 'none',
+  pointerEvents: 'none',
+  zIndex: 1,
   [theme.breakpoints.down('sm')]: {
-    fontSize: 'clamp(0.9rem, 1.2vw, 1rem)',
-  },
-}));
-
-const CharacterTrait = styled(Typography)(({ theme }) => ({
-  fontFamily: '"Lora", serif',
-  fontSize: 'clamp(0.9rem, 1.2vw, 1rem)',
-  fontWeight: 400,
-  color: '#ccc',
-  marginBottom: 'clamp(8px, 1.2vw, 12px)',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: 'clamp(0.8rem, 1vw, 0.9rem)',
-  },
-}));
-
-const PowerLevel = styled(Typography)(({ theme }) => ({
-  fontSize: 'clamp(0.9rem, 1.3vw, 1.1rem)',
-  fontWeight: 600,
-  color: '#ffd700',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: 'clamp(0.8rem, 1vw, 1rem)',
+    width: shape === 'star' ? '8px' : '6px',
+    height: shape === 'star' ? '8px' : '6px',
   },
 }));
 
 const Main = () => {
-  const cardsRef = useRef([]);
-  const welcomeRef = useRef(null);
-  const swiperRef = useRef(null);
+  const titleRef = useRef(null);
+  const descRef = useRef(null);
+  const buttonRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    const observerOptions = {
-      root: null,
-      threshold: 0.1,
-    };
+    // Анимация заголовка
+    gsap.fromTo(
+      titleRef.current,
+      { opacity: 0, y: -80, scale: 0.6, filter: 'blur(5px)' },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        filter: 'blur(0px)',
+        duration: 1.8,
+        ease: 'power4.out',
+      }
+    );
 
-    const animateOnScroll = (entries, observer) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const target = entry.target;
+    // Анимация описания (появление слов)
+    const words = descRef.current?.querySelectorAll('.word');
+    gsap.fromTo(
+      words,
+      { opacity: 0, y: 30, filter: 'blur(3px)' },
+      {
+        opacity: 1,
+        y: 0,
+        filter: 'blur(0px)',
+        duration: 1,
+        stagger: 0.04,
+        ease: 'power4.out',
+        delay: 0.6,
+      }
+    );
 
-          if (target === welcomeRef.current) {
-            // Анимация приветственного блока
-            gsap.fromTo(
-              target,
-              { opacity: 0, y: 20 },
-              {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'power3.out',
-              }
-            );
-            // Анимация текста
-            gsap.fromTo(
-              target.querySelectorAll('.welcome-text'),
-              { opacity: 0, y: 15 },
-              {
-                opacity: 1,
-                y: 0,
-                duration: 0.6,
-                stagger: 0.2,
-                ease: 'power3.out',
-                delay: 0.2,
-              }
-            );
-          }
+    // Анимация кнопки
+    gsap.fromTo(
+      buttonRef.current,
+      { opacity: 0, y: 50, scale: 0.8 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1.2,
+        ease: 'power4.out',
+        delay: 1,
+      }
+    );
 
-          if (target === swiperRef.current) {
-            // Анимация слайдера
-            gsap.fromTo(
-              target,
-              { opacity: 0, y: 30 },
-              {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'power3.out',
-              }
-            );
-          }
-
-          cardsRef.current.forEach((card, index) => {
-            if (card && entry.target.contains(card)) {
-              gsap.fromTo(
-                card,
-                { opacity: 0, y: 50 },
-                {
-                  opacity: 1,
-                  y: 0,
-                  duration: 0.8,
-                  ease: 'power3.out',
-                  delay: index * 0.1,
-                }
-              );
-            }
-          });
-
-          observer.unobserve(target);
-        }
+    // Анимация частиц
+    const particles = containerRef.current?.querySelectorAll('.particle');
+    particles.forEach((particle, index) => {
+      gsap.to(particle, {
+        x: () => Math.random() * 250 - 125,
+        y: () => Math.random() * 250 - 125,
+        opacity: () => Math.random() * 0.4 + 0.2,
+        scale: () => Math.random() * 0.6 + 0.4,
+        rotation: () => Math.random() * 360,
+        duration: 4,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+        delay: index * 0.08,
       });
-    };
-
-    const observer = new IntersectionObserver(animateOnScroll, observerOptions);
-
-    if (welcomeRef.current) observer.observe(welcomeRef.current);
-    if (swiperRef.current) observer.observe(swiperRef.current);
-    cardsRef.current.forEach((card) => {
-      if (card) observer.observe(card);
     });
-
-    return () => {
-      if (welcomeRef.current) observer.unobserve(welcomeRef.current);
-      if (swiperRef.current) observer.unobserve(swiperRef.current);
-      cardsRef.current.forEach((card) => {
-        if (card) observer.unobserve(card);
-      });
-    };
   }, []);
 
-  const memoizedCharacters = useMemo(() => charactersData, []);
+  // Разделение текста на слова для анимации
+  const descriptionText =
+    'Enigma RPG is a multiplayer P2E game that runs as a Discord bot. Embark on quests, battle monsters, complete dungeons and raids, and build your character—all through interactive slash commands and button-based choices.';
+  const words = descriptionText.split(' ').map((word, index) => (
+    <span key={index} className="word" style={{ display: 'inline-block', margin: '0 4px' }}>
+      {word}
+    </span>
+  ));
 
   return (
-    <MainContainer>
-      <Box ref={swiperRef}>
-        <SwiperComponent />
-      </Box>
-      <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10}>
-        <Title variant="h1">✨ Magician</Title>
-      </Tilt>
-      <WelcomeSection ref={welcomeRef}>
-        <WelcomeTitle className="welcome-text" variant="h2">
-          Arcane Nexus Awaits
-        </WelcomeTitle>
-        <WelcomeText className="welcome-text">
-          Step into <span>Magician</span>, where arcane power shapes destiny. Choose your mage, unleash devastating spells, and conquer cosmic trials. Harness <span>Aether</span> through battles and relics to claim your legacy.
-        </WelcomeText>
-      </WelcomeSection>
-      <CharactersGrid>
-        {memoizedCharacters.map((character, index) => (
-          <Tilt key={index} tiltMaxAngleX={15} tiltMaxAngleY={15} glareEnable={true} glareMaxOpacity={0.2} glareColor="#ffd700">
-            <CharacterCard ref={(el) => (cardsRef.current[index] = el)}>
-              <CharacterImage src={character.image} alt={character.name} />
-              <CharacterInfo>
-                <CharacterName>{character.name}</CharacterName>
-                <CharacterClass>{character.class}</CharacterClass>
-                <CharacterTrait>{character.trait}</CharacterTrait>
-                <PowerLevel>{character.powerLevel}</PowerLevel>
-              </CharacterInfo>
-            </CharacterCard>
-          </Tilt>
+<BigContainer>
+
+      <MainContainer ref={containerRef}>
+        {/* Декоративные частицы (круги и звёзды) */}
+        {[...Array(30)].map((_, index) => (
+          <Particle
+            key={index}
+            className="particle"
+            shape={index % 2 === 0 ? 'circle' : 'star'}
+            sx={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+          />
         ))}
-      </CharactersGrid>
-    </MainContainer>
+        <Tilt
+          tiltMaxAngleX={20}
+          tiltMaxAngleY={20}
+          glareEnable={true}
+          glareMaxOpacity={0.6}
+          glareColor="#ff0000"
+          scale={1.15}
+          perspective={700}
+        >
+          <Title ref={titleRef} variant="h1">
+            Enigma
+          </Title>
+        </Tilt>
+        <Description ref={descRef} variant="body1">
+          {words}
+        </Description>
+        <PlayButton
+          ref={buttonRef}
+          variant="contained"
+          href="https://discord.com" // Замените на реальную ссылку
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Play Now
+        </PlayButton>
+      </MainContainer>
+</BigContainer>
   );
 };
 

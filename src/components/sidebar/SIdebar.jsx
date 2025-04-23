@@ -22,10 +22,10 @@ const NavbarContainer = styled(Box)(({ theme, showProduct }) => ({
   alignItems: 'center',
   justifyContent: showProduct ? 'center' : 'space-between',
   padding: showProduct ? '20px' : '0 40px',
-  background: showProduct ? 'rgba(10, 0, 50, 0.95)' : 'rgba(50, 0, 100, 0.2)',
+  background: showProduct ? 'rgba(50, 0, 0, 0.95)' : 'rgba(139, 0, 0, 0.2)', // Красный фон
   backdropFilter: 'blur(10px)',
-  boxShadow: '0 4px 15px rgba(255, 223, 0, 0.1)',
-  borderBottom: '1px solid rgba(255, 223, 0, 0.3)',
+  boxShadow: '0 4px 15px rgba(255, 0, 0, 0.2)', // Красная тень
+  borderBottom: '1px solid rgba(255, 0, 0, 0.3)', // Красная граница
   zIndex: 1000,
   transition: 'all 0.3s ease',
   [theme.breakpoints.down('sm')]: {
@@ -37,9 +37,9 @@ const NavbarContainer = styled(Box)(({ theme, showProduct }) => ({
     flexDirection: showProduct ? 'column' : 'row',
     justifyContent: showProduct ? 'start' : 'space-around',
     alignItems: showProduct ? 'center' : 'center',
-    background: showProduct ? 'rgba(10, 0, 50, 0.95)' : 'rgba(50, 0, 100, 0.4)',
-    borderTop: showProduct ? 'none' : '1px solid rgba(255, 223, 0, 0.3)',
-    borderBottom: showProduct ? '1px solid rgba(255, 223, 0, 0.3)' : 'none',
+    background: showProduct ? 'rgba(50, 0, 0, 0.95)' : 'rgba(139, 0, 0, 0.4)',
+    borderTop: showProduct ? 'none' : '1px solid rgba(255, 0, 0, 0.3)',
+    borderBottom: showProduct ? '1px solid rgba(255, 0, 0, 0.3)' : 'none',
     gap: showProduct ? '20px' : '0',
   },
 }));
@@ -47,7 +47,7 @@ const NavbarContainer = styled(Box)(({ theme, showProduct }) => ({
 const NavButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
   color: '#fff',
-  background: 'rgba(255, 223, 0, 0.1)',
+  background: 'rgba(255, 0, 0, 0.1)', // Красный фон кнопки
   borderRadius: '12px',
   padding: '10px 20px',
   fontFamily: '"Cinzel", serif',
@@ -56,17 +56,17 @@ const NavButton = styled(Button)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   transition: 'all 0.3s ease',
-  border: '1px solid rgba(255, 223, 0, 0.3)',
+  border: '1px solid rgba(255, 0, 0, 0.3)', // Красная граница
   '& svg': {
     marginRight: '8px',
     fontSize: '1.5rem',
     color: '#fff',
   },
   '&:hover, &.active': {
-    background: 'rgba(255, 223, 0, 0.3)',
-    boxShadow: '0 0 15px rgba(255, 223, 0, 0.5)',
+    background: 'rgba(255, 0, 0, 0.3)', // Красный при наведении
+    boxShadow: '0 0 15px rgba(255, 0, 0, 0.5)', // Красное свечение
     transform: 'scale(1.05)',
-    border: '1px solid rgba(255, 223, 0, 0.8)',
+    border: '1px solid rgba(255, 0, 0, 0.8)',
     '& svg': {
       color: '#fff',
     },
@@ -87,7 +87,7 @@ const NavButton = styled(Button)(({ theme }) => ({
       boxShadow: 'none',
       transform: 'scale(1.1)',
       '& svg': {
-        color: '#ffd700',
+        color: '#ff0000', // Яркий красный для иконок
       },
     },
   },
@@ -98,13 +98,13 @@ const ProductContainer = styled(Box)(({ theme }) => ({
   maxWidth: '500px',
   background: 'rgba(255, 255, 255, 0.05)',
   backdropFilter: 'blur(12px)',
-  border: '1px solid rgba(255, 223, 0, 0.3)',
+  border: '1px solid rgba(255, 0, 0, 0.3)', // Красная граница
   borderRadius: '16px',
   padding: '20px',
   color: '#fff',
   position: 'relative',
   overflow: 'hidden',
-  boxShadow: '0 0 20px rgba(255, 223, 0, 0.2)',
+  boxShadow: '0 0 20px rgba(255, 0, 0, 0.2)', // Красная тень
   '&:before': {
     content: '""',
     position: 'absolute',
@@ -113,7 +113,7 @@ const ProductContainer = styled(Box)(({ theme }) => ({
     width: '100%',
     height: '100%',
     border: '2px solid transparent',
-    borderImage: 'linear-gradient(45deg, #ffd700, #ffbf00, #ffd700) 1',
+    borderImage: 'linear-gradient(45deg, #ff0000, #8b0000, #ff0000) 1', // Красный градиент
     borderRadius: '16px',
     opacity: 0.8,
   },
@@ -128,9 +128,9 @@ const CloseButton = styled(IconButton)(({ theme }) => ({
   top: '15px',
   right: '15px',
   color: '#fff',
-  background: 'rgba(255, 223, 0, 0.2)',
+  background: 'rgba(255, 0, 0, 0.2)', // Красный фон
   '&:hover': {
-    background: 'rgba(255, 223, 0, 0.4)',
+    background: 'rgba(255, 0, 0, 0.4)', // Красный при наведении
   },
 }));
 
@@ -150,7 +150,7 @@ const Navbar = () => {
     if (navbarRef.current) {
       gsap.fromTo(
         navbarRef.current,
-        { opacity: 0, y: showProduct || !isMobile ? -20 : 20 }, // Снизу для мобильного футера
+        { opacity: 0, y: showProduct || !isMobile ? -20 : 20 },
         {
           opacity: 1,
           y: 0,
@@ -185,7 +185,7 @@ const Navbar = () => {
             aria-label="Go to main page"
           >
             <HomeIcon fontSize="inherit" />
-            <span>Start</span>
+            <span>About</span>
           </NavButton>
           <NavButton
             component={NavLink}
@@ -194,10 +194,17 @@ const Navbar = () => {
             aria-label="Go to maps"
           >
             <MapIcon fontSize="inherit" />
-            <span>Map</span>
+            <span>Getting Started</span>
           </NavButton>
-     
-       
+          <NavButton
+            component={NavLink}
+            to="/app/maps"
+            className={({ isActive }) => (isActive ? 'active' : '')}
+            aria-label="Go to maps"
+          >
+            <MapIcon fontSize="inherit" />
+            <span>Tokenomics</span>
+          </NavButton>
           <NavButton
             component={NavLink}
             to="/"
